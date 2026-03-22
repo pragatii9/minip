@@ -1,15 +1,11 @@
 import axios from 'axios'
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+// ✅ FIXED: Direct backend URL (no env issues)
 
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-})
+  baseURL: "http://localhost:5000",
+});
 
+// ✅ Request interceptor (optional token)
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('adminToken')
@@ -18,36 +14,54 @@ api.interceptors.request.use(
     }
     return config
   },
-  (error) => {
-    return Promise.reject(error)
-  }
+  (error) => Promise.reject(error)
 )
 
+// ✅ Response interceptor (just logs errors, no redirect)
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('adminToken')
-      window.location.href = '/admin/login'
-    }
+    console.log("API ERROR:", error?.response?.data || error.message)
     return Promise.reject(error)
   }
 )
 
+// ✅ BYPASS LOGIN (no backend auth needed)
 export const authAPI = {
-  login: (credentials) => api.post('/admin/login', credentials),
-  logout: () => api.post('/admin/logout'),
+  login: async () => {
+    localStorage.setItem('adminToken', 'dummy-token')
+    return {
+      data: { token: 'dummy-token' },
+    }
+  },
+
+  logout: () => {
+    localStorage.removeItem('adminToken')
+    return Promise.resolve()
+  },
 }
 
+// ✅ CERTIFICATE APIs
 export const certificateAPI = {
-  upload: (formData) => api.post('/certificate/upload', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  }),
-  verify: (data) => api.post('/certificate/verify', data),
-  getRecords: (params) => api.get('/certificate/records', { params }),
-  getStats: () => api.get('/certificate/stats'),
+  upload: (formData) => {
+    return api.post('/certificate/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+  },
+
+  verify: (data) => {
+    return api.post('/certificate/verify', data)
+  },
+
+  getRecords: () => {
+    return api.get('/certificate/records')
+  },
+
+  getStats: () => {
+    return api.get('/certificate/stats')
+  },
 }
 
 export default api

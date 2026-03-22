@@ -6,9 +6,9 @@ import Input from '../components/Input'
 import { Card, CardBody, CardHeader } from '../components/Card'
 import LoadingSpinner from '../components/LoadingSpinner'
 import { useToast } from '../contexts/ToastContext'
-import { certificateAPI } from '../services/api'
 import { formatDate, debounce } from '../utils/helpers'
 import { STATUS_OPTIONS } from '../utils/constants'
+import api from "../services/api"; 
 
 const RecordsPage = () => {
   const { showToast } = useToast()

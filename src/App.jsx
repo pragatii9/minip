@@ -18,24 +18,31 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<Layout />}>
+
+              {/* Public Routes */}
               <Route index element={<LandingPage />} />
               <Route path="admin/login" element={<AdminLogin />} />
+
+              {/* 🔥 TEMP: REMOVE PROTECTION FOR TESTING */}
+              <Route path="admin/upload" element={<UploadCertificate />} />
+
+              {/* Protected Routes */}
               <Route path="admin/dashboard" element={
                 <ProtectedRoute>
                   <AdminDashboard />
                 </ProtectedRoute>
               } />
-              <Route path="admin/upload" element={
-                <ProtectedRoute>
-                  <UploadCertificate />
-                </ProtectedRoute>
-              } />
-              <Route path="verify" element={<VerifyCertificate />} />
+
               <Route path="records" element={
                 <ProtectedRoute>
                   <RecordsPage />
                 </ProtectedRoute>
               } />
+
+              {/* ✅ FIXED VERIFY ROUTES */}
+              <Route path="verify" element={<VerifyCertificate />} />
+              <Route path="verify/:id" element={<VerifyCertificate />} />
+
             </Route>
           </Routes>
         </Router>

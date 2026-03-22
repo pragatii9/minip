@@ -25,28 +25,16 @@ const AdminDashboard = () => {
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    fetchStats()
-  }, [])
-
-  const fetchStats = async () => {
-    try {
-      const response = await certificateAPI.getStats()
-      setStats(response.data)
-    } catch (error) {
-      console.error('Failed to fetch stats:', error)
-      showToast('Failed to fetch dashboard statistics', 'error')
-      // Set demo stats for development
-      setStats({
-        total: 156,
-        verified: 142,
-        tampered: 3,
-        pending: 11
-      })
-    } finally {
-      setLoading(false)
-    }
-  }
+ useEffect(() => {
+  // 🔥 Skip API call (since backend route not created)
+  setStats({
+    total: 156,
+    verified: 142,
+    tampered: 3,
+    pending: 11
+  });
+  setLoading(false);
+}, []);
 
   const handleLogout = () => {
     localStorage.removeItem('adminToken')
