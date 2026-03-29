@@ -1,11 +1,11 @@
 import axios from 'axios'
 
-// ✅ FIXED: Direct backend URL (no env issues)
-
+// ✅ Create axios instance (VERY IMPORTANT)
+const api = axios.create({
   baseURL: "http://localhost:5000",
-});
+})
 
-// ✅ Request interceptor (optional token)
+// Request interceptor
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('adminToken')
@@ -17,7 +17,7 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 )
 
-// ✅ Response interceptor (just logs errors, no redirect)
+// Response interceptor
 api.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -26,7 +26,7 @@ api.interceptors.response.use(
   }
 )
 
-// ✅ BYPASS LOGIN (no backend auth needed)
+// BYPASS LOGIN
 export const authAPI = {
   login: async () => {
     localStorage.setItem('adminToken', 'dummy-token')
@@ -41,7 +41,7 @@ export const authAPI = {
   },
 }
 
-// ✅ CERTIFICATE APIs
+// CERTIFICATE APIs
 export const certificateAPI = {
   upload: (formData) => {
     return api.post('/certificate/upload', formData, {
